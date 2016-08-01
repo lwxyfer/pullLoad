@@ -8,7 +8,6 @@
     <title>iScroll demo: simple</title>
     <script src="http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
     <script type="text/javascript" src="src/iscroll.js"></script>
-    <script type="text/javascript" src="src/pull.js"></script>
 
     <style type="text/css">
         * {
@@ -122,8 +121,9 @@
 
     <div id="wrapper">
         <div id="scroller">
-            <div class="placeholder">拉我</div>
-            <ul>
+            <div data-top-placeholder><h1>刷新中。。。</h1></div>
+            <div data-top-loading><h1>加载中。。。</h1></div>
+            <ul id="list">
                 <li>Pretty row 1</li>
                 <li>Pretty row 2</li>
                 <li>Pretty row 3</li>
@@ -175,10 +175,13 @@
                 <li>Pretty row 49</li>
                 <li>Pretty row 50</li>
             </ul>
+            <div data-bot-placeholder><h1>上拉加载</h1></div>
+            <div data-bot-loading><h1>数据获取中</h1></div>
         </div>
     </div>
 
     <div id="footer"></div>
+    <script type="text/javascript" src="src/pull.js"></script>
 
 </body>
 

@@ -1,39 +1,93 @@
-// var myScroll;
-//
-// function loaded () {
-//     myScroll = new IScroll('#wrapper', {
-//         mouseWheel: true,
-//         click: true
-//      });
-// }
-
-document.addEventListener('touchmove', function (e) {
-    e.preventDefault();
-    pull({
-        node:'#wrapper'
-    })
-}, false);
+window.onload = function() {
+  pull({
+    node: '#wrapper',
+    topFoo: add,
+    botFoo: addBot,
+  })
+}
 
 function pull({
-    node = '', // 滚动的节点
-    triggerDistance = '', // 下拉触发距离
-    upTitle = false, // 下拉显示提示，不设置默认为无
-    loading = '我是圈圈', // 后期考虑改为知乎类似的彩虹圈
-    downTitle = false, // 同上
-    upFoo = '', // 回调函数
-    downFoo = '',
-    auto = 'false', // 到底后是否自动刷新
+  node = '', // 滚动的节点
+  topFoo = '', // 回调函数
+  botFoo = '',
 }) {
-    let $node = $(node);
-    let scroll = new IScroll(node,{
-        click:true,
-        mouseWheel: true,
-    });
-    scroll.on('scrollStart', function() {
-        console.log('开始下拉操作');
-        console.log(this.directionY)
-    });
-    scroll.on('scrollEnd', () => {
-        console.log('滚动借宿')
-    });
+  let $node = $(node);
+  let scroll = new IScroll(node,{
+    click:true,
+    mouseWheel: true,
+  });
+  let topOffset = $node.outerHeight();
+  console.log(topOffset)
+
+  let topHolder = $('#wrapper [data-top-placeholder]')
+  let botHolder = $('#wrapper [data-bot-placeholder]')
+  let topLoading = $('#wrapper [data-top-loading]')
+  let botLoading = $('#wrapper [data-bot-loading]')
+  topHolder.css('display','none')
+  topLoading.css('display','none')
+  botHolder.css('display','none')
+  botLoading.css('display','none')
+
+  let timer = undefined; // debounce
+  let status = undefined; // store callback function status
+
+  scroll.on('scrollStart', function() {
+    console.log('开始下拉操作');
+
+    // 使用lite版，需手动对y值得变化做监听，难获取位置
+    console.log(this.y);
+
+    if( this.directionY === -1 ) {
+      topHolder.css('display','block')
+
+      if( timer ) clearTimeout(timer)
+
+      timer = setTimeout(function(){
+        topHolder.css('display','none')
+        topLoading.css('display','block')
+        // status = topFoo();
+      },500);
+
+    } else if (this.directionY === 1) {
+      console.log(this.y)
+      botHolder.css('display','block')
+
+      if( timer ) clearTimeout(timer)
+
+      timer = setTimeout(function(){
+        botHolder.css('display','none')
+        botLoading.css('display','block')
+        // status = botFoo()
+      },500)
+    }
+
+  });
+
+  scroll.on('scrollEnd', function() {
+    console.log('滚动结束');
+
+    if( status ) {
+      topHolder.css('display','none')
+      topLoading.css('display','none')
+      botHolder.css('display','none')
+      botLoading.css('display','none')
+    }
+
+    setTimeout(function () {
+      scroll.refresh();
+    }, 100);
+  });
+}
+
+
+var add = function() {
+  let $scr = $('#list');
+  $scr.first().prepend('<li>我是加载的</li>');
+  return true
+}
+
+var addBot = function() {
+  let $scr = $('#list');
+  $scr.first().append('<li>我是加载的</li>');
+  return true
 }
