@@ -187,9 +187,11 @@
     <script type="text/javascript" src="../dist/pullload.js"></script>
     <script>
     // 测试数据加载
+    var count = 0;
     var add = function() {
       let $scr = $('#list');
-      $scr.first().prepend('<li>我是上面加载的</li>');
+      count++;
+      $scr.first().prepend('<li>我是上面加载的 '+ count + '</li>');
       return true
     }
 
